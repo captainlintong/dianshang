@@ -1,15 +1,21 @@
 <template>
-  <div id="app">我是App</div>
+  <div id="app">
+    <router-view></router-view>
+  </div>
+
 </template>
 
 <script>
 export default {
-  name: "",
-  data() {
-    return {};
+  name: 'App',
+  data () {
+    return {}
   }
-};
+}
 </script>
 
 <style scoped>
+#app {
+  height: 100%;
+}
 </style>
