@@ -54,6 +54,7 @@ export default {
           message: `管理员${this.loginForm.username}，您登录成功`,
           type: 'success'
         })
+        window.localStorage.setItem('token', dt.data.token)
         this.$router.replace('/')
       } else {
         this.$message.error(`登录失败${dt.meta.msg}`)
