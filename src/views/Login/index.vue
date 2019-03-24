@@ -6,8 +6,7 @@
       label-width="80px"
       :model="loginForm"
       :rules="loginFormRules"
-      ref="loginFormEl"
-      >
+      ref="loginFormEl">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
         </el-form-item>
@@ -55,6 +54,7 @@ export default {
           message: `管理员${this.loginForm.username}，您登录成功`,
           type: 'success'
         })
+        this.$router.replace('/')
       } else {
         this.$message.error(`登录失败${dt.meta.msg}`)
       }
