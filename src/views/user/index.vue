@@ -15,7 +15,7 @@
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="info" @click="addUser">添加用户</el-button>
+          <el-button plain @click="addUser">添加用户</el-button>
         </el-col>
       </el-row>
       <el-table
@@ -37,6 +37,40 @@
         <el-table-column
           prop="mobile"
           label="电话">
+        </el-table-column>
+        <!--
+          el-table-column 是表格的列
+          template 是自定义列的内容模板
+          slot-scope 是你自定义这一列内容使用的数据
+          scope 就是你用来渲染表格时候的那个数据（也就是你写在 el-table 里面的 data 中的那个数组）
+          row 就是在循环渲染中的每一行的当前数据（就是一个类似我们 v-for 的时候的 item）
+          插槽
+        -->
+        <el-table-column label="用户状态" width="100px">
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.mg_state" ></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template>
+            <el-button
+              plain
+              icon="el-icon-edit"
+              size="small"
+              title="编辑用户"
+              ></el-button>
+            <el-button
+              size="small"
+              plain
+              title="删除用户"
+              icon="el-icon-delete"
+              ></el-button>
+              <el-button
+              plain
+              size="small"
+              title="分配角色"
+              icon="el-icon-star-off"></el-button>
+          </template>
         </el-table-column>
       </el-table>
     </el-card>
