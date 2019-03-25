@@ -6,17 +6,41 @@
         </el-col>
         <el-col :span="17" class="pin">品 优 购 后 台 管 理 系 统</el-col>
         <el-col :span="4">
-          <a href="#">退出</a>
+          <el-button  @click="goOut" size="mini" type="info">退出</el-button>
         </el-col>
       </el-row>
   </div>
 </template>
 
 <script>
+
+import { removeToken } from '@/until/auth'
+
 export default {
   name: 'AppHeader',
   data () {
     return {}
+  },
+  methods: {
+    goOut () {
+      this.$confirm('是否确定退出?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        removeToken()
+        this.$router.replace('/login')
+        this.$message({
+          type: 'success',
+          message: '退出成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消退出'
+        })
+      })
+    }
   }
 }
 </script>
@@ -45,12 +69,7 @@ export default {
 .layout-box {
   height: 100%;
 }
-.el-aside {
-  height: 100%;
-}
-.el-main {
-  background-color: #ccc;
-}
+
 .el-menu {
   height: 100%;
   background-color: rgb(117, 188, 216);

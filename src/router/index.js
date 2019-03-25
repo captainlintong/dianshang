@@ -4,6 +4,7 @@ import Login from '@/views/Login'
 import Layout from '@/views/Layout'
 import UserList from '@/views/user'
 import Home from '@/views/Home'
+import { getToken } from '@/until/auth'
 
 Vue.use(Router)
 
@@ -23,7 +24,8 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/login') {
     return next()
   }
-  const token = window.localStorage.getItem('token')
+  // const token = window.localStorage.getItem('token')
+  const token = getToken()
   if (!token) {
     return next('/login')
   }

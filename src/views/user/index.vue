@@ -75,8 +75,7 @@
 
 <script>
 
-import { getUserList } from '@/api/user'
-import { addUser } from '@/api/user'
+import { getUserList, addUser } from '@/api/user'
 
 export default {
   async created () {
@@ -98,7 +97,7 @@ export default {
       tableLoading: true,
       addFormRules: {
         username: [
-          { required: true, message: '用户名不能为空', trigger: ['blur', 'change'] },
+          { required: true, message: '用户名不能为空', trigger: ['blur', 'change'] }
         ],
         password: [
           { min: 6, max: 10, message: '请输入 6 到 11 个字符', trigger: ['blur', 'change'] },
@@ -119,7 +118,7 @@ export default {
   methods: {
     async loadUsers () {
       this.tableLoading = true
-      const { data } = await getUserList({ pagenum: 1, pagesize: 10 })
+      const { data } = await getUserList({ pagenum: 1, pagesize: 100 })
       this.users = data.users
       this.tableLoading = false
     },
@@ -127,9 +126,9 @@ export default {
       this.$refs.addFormEl.validate(valid => {
         if (!valid) {
           this.$notify.error({
-          title: '错误',
-          message: '请填写完毕后提交'
-        })
+            title: '错误',
+            message: '请填写完毕后提交'
+          })
           return
         }
         this.submitAdd()
@@ -150,20 +149,18 @@ export default {
     remove () {
       this.visible = false
       this.$notify({
-          title: '警告',
-          message: '你已取消添加用户',
-          type: 'warning'
-        })
+        title: '警告',
+        message: '你已取消添加用户',
+        type: 'warning'
+      })
       this.$refs.addFormEl.resetFields()
       this.addFormVisible = false
-
     },
     addUser () {
       this.$notify.info({
-          title: '消息',
-          message: '你将添加用户'
-        })
-      //  this.$message('你将添加用户')
+        title: '消息',
+        message: '你将添加用户'
+      })
       this.addFormVisible = true
     }
   }
@@ -171,9 +168,6 @@ export default {
 </script>
 
 <style scoped>
-.el-card, .box-card {
-  height: 100%;
-}
 .el-table {
   margin-top: 15px;
 }
@@ -183,4 +177,16 @@ export default {
 .sure {
   margin-left: 20px;
 }
+.el-card {
+  overflow: visible;
+}
+/* .box-card {
+  height: 100%;
+}
+.el-main {
+  height: 100%;
+}
+.el-container {
+  height: 100%;
+} */
 </style>

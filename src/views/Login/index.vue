@@ -23,6 +23,7 @@
 
 <script>
 import { loginAdress } from '@/api'
+import { setToken } from '@/until/auth'
 export default {
   name: 'Login',
   data () {
@@ -54,7 +55,7 @@ export default {
           message: `管理员${this.loginForm.username}，您登录成功`,
           type: 'success'
         })
-        window.localStorage.setItem('token', data.token)
+        setToken(data.token)
         this.$router.replace('/')
       } else {
         this.$message.error(`登录失败${meta.msg}`)
