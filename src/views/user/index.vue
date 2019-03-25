@@ -52,7 +52,7 @@
           </template>
         </el-table-column>
         <el-table-column label="操作">
-          <template>
+          <template slot-scope="scope">
             <el-button
               plain
               icon="el-icon-edit"
@@ -64,6 +64,7 @@
               plain
               title="删除用户"
               icon="el-icon-delete"
+              @click='handelDelUser(scope.row)'
               ></el-button>
               <el-button
               plain
@@ -151,12 +152,13 @@ export default {
     }
   },
   methods: {
-    async loadUsers () {
+    async loadUsers () { // 渲染用户列表
       this.tableLoading = true
       const { data } = await User.getUserList({ pagenum: 1, pagesize: 100 })
       this.users = data.users
       this.tableLoading = false
     },
+    // 表单验证
     async handleAdd () {
       this.$refs.addFormEl.validate(valid => {
         if (!valid) {
@@ -169,6 +171,7 @@ export default {
         this.submitAdd()
       })
     },
+    // 添加用户
     async submitAdd () {
       const { meta } = await User.addUser(this.addFormData)
       if (meta.status === 201) {
@@ -198,14 +201,36 @@ export default {
       })
       this.addFormVisible = true
     },
-    async setState (item) {
+    async setState (item) { // 设置用户状态
       const { data, meta } = await User.getUsermsg(item.id, item.mg_state)
       if (meta.status === 200) {
         this.$message({
           type: 'success',
-          message: `${data.mg_state? '启用': '禁用' }用户状态成功`
+          message: `${data.mg_state ? '启用' : '禁用'} 用户状态成功`
         })
       }
+    },
+    handelDelUser (item) { // 删除单个用户
+      this.$confirm('是否确定删除用户?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const { meta } = await User.delUser(item.id)
+        if (meta.status === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.loadUsers()
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
@@ -224,13 +249,4 @@ export default {
 .el-card {
   overflow: visible;
 }
-/* .box-card {
-  height: 100%;
-}
-.el-main {
-  height: 100%;
-}
-.el-container {
-  height: 100%;
-} */
 </style>
