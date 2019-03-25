@@ -1,28 +1,22 @@
 <template>
-  <el-container class="layout-box">
-    <el-header style="height: 100px">
-       <AppHeader />
-    </el-header>
-    <el-container>
-      <AppAside />
-      <el-main>
-        <router-view />
-      </el-main>
-    </el-container>
-  </el-container>
+  <div>
+    <el-row class="app-header">
+        <el-col :span="3">
+          <img src="./logo.png" alt="黑马程序员">
+        </el-col>
+        <el-col :span="17" class="pin">品 优 购 后 台 管 理 系 统</el-col>
+        <el-col :span="4">
+          <a href="#">退出</a>
+        </el-col>
+      </el-row>
+  </div>
 </template>
 
 <script>
-import AppHeader from './header'
-import AppAside from './aside'
 export default {
-  name: 'Layout',
+  name: 'AppHeader',
   data () {
     return {}
-  },
-  components: {
-    AppHeader,
-    AppAside
   }
 }
 </script>
@@ -57,15 +51,15 @@ export default {
 .el-main {
   background-color: #ccc;
 }
-
+.el-menu {
+  height: 100%;
+  background-color: rgb(117, 188, 216);
+  border: none;
+}
 .el-col-3 {
   background-color: #ccc;
   overflow: hidden;
   margin-left: 11px;
   padding: 24px 0;
 }
-.el-container {
-  height: 100%;
-}
-
 </style>

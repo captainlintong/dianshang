@@ -22,7 +22,7 @@
 </template>
 
 <script>
-
+import { loginAdress } from '@/api'
 export default {
   name: 'Login',
   data () {
@@ -48,16 +48,16 @@ export default {
       })
     },
     async login () {
-      var { data: dt } = await this.$http.post('/login', this.loginForm)
-      if (dt.meta.status === 200) {
+      var { data, meta } = await loginAdress(this.loginForm)
+      if (meta.status === 200) {
         this.$message({
           message: `管理员${this.loginForm.username}，您登录成功`,
           type: 'success'
         })
-        window.localStorage.setItem('token', dt.data.token)
+        window.localStorage.setItem('token', data.token)
         this.$router.replace('/')
       } else {
-        this.$message.error(`登录失败${dt.meta.msg}`)
+        this.$message.error(`登录失败${meta.msg}`)
       }
     }
   }
