@@ -48,7 +48,7 @@
         -->
         <el-table-column label="用户状态" width="100px">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.mg_state" ></el-switch>
+            <el-switch v-model="scope.row.mg_state" @change="setState(scope.row)"></el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -109,7 +109,8 @@
 
 <script>
 
-import { getUserList, addUser } from '@/api/user'
+// import { getUserList, addUser, getUsermsg } from '@/api/user'
+import * as User from '@/api/user'
 
 export default {
   async created () {
@@ -152,7 +153,7 @@ export default {
   methods: {
     async loadUsers () {
       this.tableLoading = true
-      const { data } = await getUserList({ pagenum: 1, pagesize: 100 })
+      const { data } = await User.getUserList({ pagenum: 1, pagesize: 100 })
       this.users = data.users
       this.tableLoading = false
     },
@@ -169,7 +170,7 @@ export default {
       })
     },
     async submitAdd () {
-      const { meta } = await addUser(this.addFormData)
+      const { meta } = await User.addUser(this.addFormData)
       if (meta.status === 201) {
         this.$refs.addFormEl.resetFields()
         this.addFormVisible = false
@@ -196,6 +197,15 @@ export default {
         message: '你将添加用户'
       })
       this.addFormVisible = true
+    },
+    async setState (item) {
+      const { data, meta } = await User.getUsermsg(item.id, item.mg_state)
+      if (meta.status === 200) {
+        this.$message({
+          type: 'success',
+          message: `${data.mg_state? '启用': '禁用' }用户状态成功`
+        })
+      }
     }
   }
 }
