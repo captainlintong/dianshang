@@ -33,3 +33,19 @@ export const delUser = id => request({
   method: 'delete',
   url: `users/${id}`
 }).then(res => res.data)
+
+// 根据id查询用户信息
+export const setEdit = id => request({
+  method: 'get',
+  url: `users/${id}`
+}).then(res => res.data)
+
+// 发送编辑请求
+export const updataEdit = (id, email, mobile) => request({
+  method: 'put',
+  url: `users/${id}`,
+  data: {
+    email,
+    mobile
+  }
+}).then(res => res.data)

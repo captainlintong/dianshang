@@ -58,6 +58,7 @@
               icon="el-icon-edit"
               size="small"
               title="编辑用户"
+              @click="$refs.editFormEl.editUserShow(scope.row)"
               ></el-button>
             <el-button
               size="small"
@@ -105,19 +106,22 @@
         <el-button type="primary" @click.prevent="handleAdd" class="sure">确 定</el-button>
       </div>
     </el-dialog>
+    <Edit ref="editFormEl" v-on:edit-success="loadUsers"></Edit>
   </div>
 </template>
 
 <script>
-
-// import { getUserList, addUser, getUsermsg } from '@/api/user'
 import * as User from '@/api/user'
+import Edit from './edit'
 
 export default {
   async created () {
     this.loadUsers()
   },
   name: 'UserList',
+  components: {
+    Edit
+  },
   data () {
     return {
       users: [],
