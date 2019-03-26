@@ -56,7 +56,7 @@ export default {
     }
   },
   methods: {
-    async handleEdit () {
+    async handleEdit () {  // 编辑用户表单验证
       this.$refs.editFormEl.validate(valid => {
         if (!valid) {
           this.$notify.error({
@@ -68,7 +68,7 @@ export default {
         this.editUser()
       })
     },
-    async editUser () {
+    async editUser () {  // 编辑用户
       const { id, email, mobile } = this.editFormData
       const { meta } = await User.updataEdit(id, email, mobile)
       if (meta.status === 200) {
@@ -80,7 +80,7 @@ export default {
         })
       }
     },
-    remove () {
+    remove () {  // 取消编辑
       this.visible = false
       this.$notify({
         title: '警告',
@@ -90,9 +90,8 @@ export default {
       this.$refs.editFormEl.resetFields()
       this.editFormVisible = false
     },
-    async editUserShow (item) {
-      const { data, meta } = await User.setEdit(item.id, item.email, item.mobile)
-      console.log(data)
+    async editUserShow (item) { // 显示编辑框
+      const { data, meta } = await User.setEdit(item.id)
       if (meta.status === 200) {
         this.editFormVisible = true
         this.editFormData = data

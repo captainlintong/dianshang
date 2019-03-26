@@ -71,7 +71,9 @@
               plain
               size="small"
               title="分配角色"
-              icon="el-icon-star-off"></el-button>
+              icon="el-icon-star-off"
+              @click="$refs.roleFormEl.rolesUserShow(scope.row)"
+              ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -107,12 +109,14 @@
       </div>
     </el-dialog>
     <Edit ref="editFormEl" v-on:edit-success="loadUsers"></Edit>
+    <EditRole ref="roleFormEl"></EditRole>
   </div>
 </template>
 
 <script>
 import * as User from '@/api/user'
 import Edit from './edit'
+import EditRole from './role'
 
 export default {
   async created () {
@@ -120,7 +124,8 @@ export default {
   },
   name: 'UserList',
   components: {
-    Edit
+    Edit,
+    EditRole
   },
   data () {
     return {
@@ -198,7 +203,7 @@ export default {
       this.$refs.addFormEl.resetFields()
       this.addFormVisible = false
     },
-    addUser () {
+    addUser () {  // 显示添加用户框
       this.$notify.info({
         title: '消息',
         message: '你将添加用户'
