@@ -1,7 +1,7 @@
 <template>
   <div class="box-card">
     <el-card>
-      <div slot="header" class="clearfix">
+      <div slot="header" class="clearfix header">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item>用户管理</el-breadcrumb-item>
@@ -10,8 +10,8 @@
       </div>
        <el-row :gutter="20">
         <el-col :span="6">
-          <el-input placeholder="请输入内容" v-model="searchText">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入内容" v-model="searchText" @keyup.enter.native="search">
+            <el-button slot="append" icon="el-icon-search" @click.native.prevent="search"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
@@ -161,9 +161,9 @@ export default {
     }
   },
   methods: {
-    async loadUsers () { // 渲染用户列表
+    async loadUsers (page = 1) { // 渲染用户列表
       this.tableLoading = true
-      const { data } = await User.getUserList({ pagenum: 1, pagesize: 100 })
+      const { data } = await User.getUserList({ pagenum: page, pagesize: 6, query: this.searchText })
       this.users = data.users
       this.tableLoading = false
     },
@@ -203,7 +203,7 @@ export default {
       this.$refs.addFormEl.resetFields()
       this.addFormVisible = false
     },
-    addUser () {  // 显示添加用户框
+    addUser () { // 显示添加用户框
       this.$notify.info({
         title: '消息',
         message: '你将添加用户'
@@ -240,6 +240,9 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    search () { // 搜索用户
+      this.loadUsers()
     }
   }
 }

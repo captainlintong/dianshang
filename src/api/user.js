@@ -1,12 +1,13 @@
 import request from '@/until/request'
 
 // 请求用户列表
-export const getUserList = ({ pagenum = 1, pagesize = 5 }) => request({
+export const getUserList = ({ pagenum = 1, pagesize = 6, query = '' }) => request({
   method: 'get',
   url: '/users',
   params: {
     pagenum,
-    pagesize
+    pagesize,
+    query
   }
 }).then(res => res.data)
 

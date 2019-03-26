@@ -56,7 +56,7 @@ export default {
     }
   },
   methods: {
-    async handleEdit () {  // 编辑用户表单验证
+    async handleEdit () { // 编辑用户表单验证
       this.$refs.editFormEl.validate(valid => {
         if (!valid) {
           this.$notify.error({
@@ -68,7 +68,7 @@ export default {
         this.editUser()
       })
     },
-    async editUser () {  // 编辑用户
+    async editUser () { // 编辑用户
       const { id, email, mobile } = this.editFormData
       const { meta } = await User.updataEdit(id, email, mobile)
       if (meta.status === 200) {
@@ -80,7 +80,7 @@ export default {
         })
       }
     },
-    remove () {  // 取消编辑
+    remove () { // 取消编辑
       this.visible = false
       this.$notify({
         title: '警告',

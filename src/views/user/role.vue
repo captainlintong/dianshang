@@ -61,7 +61,7 @@ export default {
       })
       this.editFormVisible = false
     },
-    async setRoles () {  // 设置角色
+    async setRoles () { // 设置角色
       const { id, rid } = this.rolesFormData
       const { meta } = await setUserRoles(id, rid)
       if (meta.status === 200) {
@@ -72,7 +72,8 @@ export default {
         })
       }
     },
-    async rolesUserShow (item) {  // 显示角色框
+    // 显示角色框
+    async rolesUserShow (item) {
       const { data, meta } = await User.setEdit(item.id, item.email, item.mobile)
       if (meta.status === 200) {
         this.editFormVisible = true
