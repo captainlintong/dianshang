@@ -77,6 +77,18 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页组件 -->
+       <el-pagination
+        background
+        @size-change="loadUsers"
+        @current-change="loadUsers"
+        :page-sizes="[5, 10, 15, 20]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :page-size="5"
+        :pager-count="5"
+        :total="total">
+      </el-pagination>
+      <!-- /分页组件 -->
     </el-card>
     <el-dialog :visible.sync="addFormVisible" width="34%" center>
       <el-form :model="addFormData" size="medium" label-position="left" :rules="addFormRules" status-icon ref="addFormEl">
@@ -157,14 +169,16 @@ export default {
           // { type: 'number', message: '号码必须为数字值', trigger: ['blur', 'change'] },
           { min: 11, max: 11, message: '请输入正确的号码', trigger: ['blur', 'change'] }
         ]
-      }
+      },
+      total: 0
     }
   },
   methods: {
-    async loadUsers (page = 1) { // 渲染用户列表
+    async loadUsers (page = 1, pagesize = 5) { // 渲染用户列表
       this.tableLoading = true
-      const { data } = await User.getUserList({ pagenum: page, pagesize: 6, query: this.searchText })
+      const { data } = await User.getUserList({ pagenum: page, pagesize: pagesize, query: this.searchText })
       this.users = data.users
+      this.total = data.total
       this.tableLoading = false
     },
     // 表单验证
@@ -260,5 +274,12 @@ export default {
 }
 .el-card {
   overflow: visible;
+}
+.el-table {
+  margin-bottom: 20px;
+}
+.el-card__header {
+  background-color: red;
+  padding: 0;
 }
 </style>
