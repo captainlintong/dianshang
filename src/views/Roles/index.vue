@@ -1,7 +1,7 @@
 <template>
 <div>
   <el-col :span="4">
-    <el-button plain class="btn">添加用户</el-button>
+    <el-button plain class="btn" @click="showAddRoles">添加角色</el-button>
   </el-col>
   <el-table
     :data="rolesData"
@@ -49,12 +49,14 @@
               plain
               icon="el-icon-edit"
               size="small"
-              title="编辑用户"
+              title="编辑角色"
+              @click.prevent='handelEditRoles(scope.row)'
               ></el-button>
             <el-button
               size="small"
               plain
-              title="删除用户"
+              title="删除角色"
+              @click.prevent="handleDelRoles(scope.row)"
               icon="el-icon-delete"
               ></el-button>
               <el-button
@@ -66,17 +68,25 @@
           </template>
         </el-table-column>
   </el-table>
+  <AddRoles ref="rolesEl" v-on:addRoles-success="loadRoles()" />
+  <EditRoles ref="editRolesEl" v-on:editRoles-success="loadRoles()" />
 </div>
 </template>
 
 <script>
-import { rolesList } from '@/api/role'
+import { rolesList, delRoles } from '@/api/role'
+import AddRoles from './addroles'
+import EditRoles from './editRoles'
 export default {
   name: 'Roles',
   data () {
     return {
       rolesData: []
     }
+  },
+  components: {
+    AddRoles,
+    EditRoles
   },
   created () {
     this.loadRoles()
@@ -87,6 +97,34 @@ export default {
       if (meta.status === 200) {
         this.rolesData = data
       }
+    },
+    showAddRoles () {
+      this.$refs.rolesEl.rolesShow()
+    },
+    handelEditRoles (item) {
+      this.$refs.editRolesEl.editRolesShow(item)
+    },
+    async handleDelRoles (item) {
+      this.$confirm('是否确定删除用户?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const { meta } = await delRoles(item.id)
+        if (meta.status === 200) {
+          this.$message({
+            message: '删除角色成功',
+            type: 'success'
+          })
+          this.loadRoles()
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
