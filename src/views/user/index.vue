@@ -1,13 +1,5 @@
 <template>
   <div class="box-card">
-    <el-card>
-      <div slot="header" class="clearfix header">
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-          <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-        </el-breadcrumb>
-      </div>
        <el-row :gutter="20">
         <el-col :span="6">
           <el-input placeholder="请输入内容" v-model="searchText" @keyup.enter.native="search">
@@ -89,7 +81,6 @@
         :total="total">
       </el-pagination>
       <!-- /分页组件 -->
-    </el-card>
     <el-dialog :visible.sync="addFormVisible" width="34%" center>
       <el-form :model="addFormData" size="medium" label-position="left" :rules="addFormRules" status-icon ref="addFormEl">
         <el-form-item label="用户名" label-width="70px" prop="username">
