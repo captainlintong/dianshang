@@ -63,6 +63,7 @@
               plain
               size="small"
               title="分配角色"
+              @click.prevent="handleSetRoles(scope.row)"
               icon="el-icon-star-off"
               ></el-button>
           </template>
@@ -70,6 +71,7 @@
   </el-table>
   <AddRoles ref="rolesEl" v-on:addRoles-success="loadRoles()" />
   <EditRoles ref="editRolesEl" v-on:editRoles-success="loadRoles()" />
+  <SetRoles ref="setRolesEl"/>
 </div>
 </template>
 
@@ -77,6 +79,7 @@
 import { rolesList, delRoles } from '@/api/role'
 import AddRoles from './addroles'
 import EditRoles from './editRoles'
+import SetRoles from './setRoles'
 export default {
   name: 'Roles',
   data () {
@@ -86,7 +89,8 @@ export default {
   },
   components: {
     AddRoles,
-    EditRoles
+    EditRoles,
+    SetRoles
   },
   created () {
     this.loadRoles()
@@ -125,6 +129,9 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    handleSetRoles (item) {
+      this.$refs.setRolesEl.setRolesShow(item)
     }
   }
 }

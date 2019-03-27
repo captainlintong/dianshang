@@ -30,7 +30,7 @@
 <script>
 import { getRoles, sureEdit } from '@/api/role'
 export default {
-  name: 'addRoles',
+  name: 'editRoles',
   data () {
     return {
       editRolesFormVisible: false,
