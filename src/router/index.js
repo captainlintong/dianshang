@@ -6,8 +6,8 @@ import UserList from '@/views/user'
 import Home from '@/views/Home'
 import Rights from '@/views/Rights'
 import Roles from '@/views/Roles'
-import ShopList from '@/views/Shop'
-import EditShop from '@/views/Shop/edit'
+import GoodsList from '@/views/Goods'
+import EditShop from '@/views/Goods/edit'
 import { getToken } from '@/until/auth'
 
 Vue.use(Router)
@@ -22,7 +22,7 @@ var router = new Router({
         { path: '/users', component: UserList },
         { path: '/rights', component: Rights },
         { path: '/roles', component: Roles },
-        { path: '/shop', component: ShopList },
+        { path: '/goods', component: GoodsList },
         { path: '/editshop', component: EditShop }
 
       ]

@@ -11,19 +11,21 @@
         </el-col>
       </el-row>
       <el-table
-        :data="shopList"
+        :data="goodsList"
         border
         stripe
         style="width: 100%">
-        <el-table-column type="index" label="编号" width="60"></el-table-column>
+        <el-table-column type="index" label="编号" width="60" align="center" :index="indexMethod"></el-table-column>
         <el-table-column
           prop="goods_name"
           label="商品名称"
+          align="center"
           width="400">
         </el-table-column>
         <el-table-column
           prop="goods_price"
           label="商品价格"
+          align="center"
           width="100">
         </el-table-column>
         <!--
@@ -34,7 +36,7 @@
           row 就是在循环渲染中的每一行的当前数据（就是一个类似我们 v-for 的时候的 item）
           插槽
         -->
-        <el-table-column label="商品状态" width="100px">
+        <el-table-column label="商品状态" width="100px" align="center">
           <template slot-scope="scope">
             {{ ['未通过', '审核中', '已审核'][scope.row.goods_state] }}
           </template>
@@ -42,14 +44,17 @@
         <el-table-column
           prop="goods_weight"
           width="100"
+          align="center"
           label="商品重量">
         </el-table-column>
         <el-table-column
           prop="add_time"
-          width="150"
+          width="180"
+          align="center"
           label="创建时间">
+          <template slot-scope="scope">{{ scope.row.add_time | dateFormat }}</template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button
               plain
@@ -78,8 +83,8 @@
       <!-- 分页组件 -->
        <el-pagination
         background
-        @size-change="loadShopList"
-        @current-change="loadShopList"
+        @size-change="bcd"
+        @current-change="abc"
         :page-sizes="[5, 10, 15, 20]"
         layout="total, sizes, prev, pager, next, jumper"
         :page-size="5"
@@ -91,31 +96,45 @@
 </template>
 
 <script>
-import * as Shop from '@/api/shop'
+import * as Goods from '@/api/goods'
 export default {
   async created () {
-    this.loadShopList()
+    this.loadGoodsList()
   },
-  name: 'ShopList',
+  name: 'GoodsList',
   data () {
     return {
-      shopList: [],
+      goodsList: [],
       searchText: '',
       addFormVisible: false,
       visible: false,
       tableLoading: true,
-      total: 0
+      total: 0,
+      goodsListInfo: {
+        pagenum: 1,
+        pagesize: 5,
+        query: ''
+      }
     }
   },
   methods: {
-    async loadShopList (page = 1, pagesize = 5) { // 渲染商品列表
+    async loadGoodsList () { // 渲染商品列表
       this.tableLoading = true
-      const { data } = await Shop.getShopList({ pagenum: page, pagesize: pagesize, query: this.searchText })
-      console.log(data);
-
-      this.shopList = data.goods
+      const { data } = await Goods.getGoodsList(this.goodsListInfo)
+      this.goodsList = data.goods
       this.total = data.total
       this.tableLoading = false
+    },
+    abc (page) { // 设置展示第几页
+      this.goodsListInfo.pagenum = page
+      this.loadGoodsList()
+    },
+    bcd (size) { // 设置每页多少条
+      this.goodsListInfo.pagesize = size
+      this.loadGoodsList()
+    },
+    indexMethod (index) { // 自定义编号
+      return (this.goodsListInfo.pagenum - 1) * this.goodsListInfo.pagesize + index + 1
     },
     remove () {
       this.visible = false
@@ -140,13 +159,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        const { meta } = await Shop.delShop(item.goods_id)
+        const { meta } = await Goods.delShop(item.goods_id)
         if (meta.status === 200) {
           this.$message({
             type: 'success',
             message: '删除商品成功!'
           })
-          this.loadShopList()
+          this.loadGoodsList()
         }
       }).catch((err) => {
         console.log(err)
@@ -157,7 +176,9 @@ export default {
       })
     },
     search () { // 搜索用户
-      this.loadShopList()
+      this.goodsListInfo.query = this.searchText
+      this.loadGoodsList()
+
     }
   }
 }

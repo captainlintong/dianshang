@@ -13,10 +13,7 @@
 </template>
 
 <script>
-
 import { removeToken } from '@/until/auth'
-
-
 export default {
   name: 'AppHeader',
   data () {

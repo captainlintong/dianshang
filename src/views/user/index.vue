@@ -15,7 +15,7 @@
         border
         stripe
         style="width: 100%">
-        <el-table-column type="index"></el-table-column>
+        <el-table-column type="index" :index="indexMethod"></el-table-column>
         <el-table-column
           prop="username"
           label="姓名"
@@ -69,15 +69,14 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- 分页组件   @size-change="abcd"-->
+      <!-- 分页组件   -->
        <el-pagination
         background
-
-        @current-change="loadUsers"
+        @size-change="sizeChange"
+        @current-change="pageChange"
         :page-sizes="[5, 10, 15, 20]"
         layout="total, sizes, prev, pager, next, jumper"
         :page-size="5"
-        :pager-count="5"
         :total="total">
       </el-pagination>
       <!-- /分页组件 -->
@@ -162,21 +161,28 @@ export default {
         ]
       },
       total: 0,
-      // userListInfo: {
-      //   pagenum: 1,
-      //   pagesize: 5,
-      //   query: ''
-      // }
+      userListInfo: {
+        pagenum: 1,
+        pagesize: 5,
+        query: ''
+      }
     }
   },
   methods: {
-    // abcd (size) {
-    //   console.log(size)
-    //   this.loadUsers(1, size)
-    // },
-    async loadUsers (page = 1, pagesize = 5) { // 渲染用户列表
+    sizeChange (size) { // 设置每页多少条
+      this.userListInfo.pagesize = size
+      this.loadUsers()
+    },
+    pageChange (page) { // 设置显示哪页
+      this.userListInfo.pagenum = page
+      this.loadUsers()
+    },
+    indexMethod (index) { // 自定义索引列
+      return (this.userListInfo.pagenum - 1) * this.userListInfo.pagesize + index + 1
+    },
+    async loadUsers () { // 渲染用户列表
       this.tableLoading = true
-      const { data } = await User.getUserList({ pagenum: page, pagesize: pagesize, query: this.searchText })
+      const { data } = await User.getUserList(this.userListInfo)
       this.users = data.users
       this.total = data.total
       this.tableLoading = false
