@@ -72,7 +72,7 @@
       <!-- 分页组件 -->
        <el-pagination
         background
-        @size-change="loadUsers"
+        @size-change="abcd"
         @current-change="loadUsers"
         :page-sizes="[5, 10, 15, 20]"
         layout="total, sizes, prev, pager, next, jumper"
@@ -161,10 +161,19 @@ export default {
           { min: 11, max: 11, message: '请输入正确的号码', trigger: ['blur', 'change'] }
         ]
       },
-      total: 0
+      total: 0,
+      // userListInfo: {
+      //   pagenum: 1,
+      //   pagesize: 5,
+      //   query: ''
+      // }
     }
   },
   methods: {
+    // abcd (size) {
+    //   console.log(size)
+    //   this.loadUsers(1, size)
+    // },
     async loadUsers (page = 1, pagesize = 5) { // 渲染用户列表
       this.tableLoading = true
       const { data } = await User.getUserList({ pagenum: page, pagesize: pagesize, query: this.searchText })

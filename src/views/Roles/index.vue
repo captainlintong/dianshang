@@ -14,17 +14,17 @@
       <template slot-scope="scope">
         <el-row v-for="first in scope.row.children" :key="first.id">
           <el-col :span="3">
-            <el-tag closable>{{ first.authName }}</el-tag>
+            <el-tag closable @close="delRights(scope.row, first)">{{ first.authName }}</el-tag>
              <i class="el-icon-arrow-right"></i>
           </el-col>
           <el-col :span="21">
             <el-row v-for="second in first.children" :key="second.id" class="xian">
               <el-col :span="4">
-                <el-tag type="success" closable>{{ second.authName }}</el-tag>
+                <el-tag type="success" closable @close="delRights(scope.row, second)">{{ second.authName }}</el-tag>
                 <i class="el-icon-arrow-right"></i>
               </el-col>
               <el-col :span="20">
-                <el-tag type="danger" closable v-for="third in second.children" :key="third.id" class="right">{{ third.authName }}</el-tag>
+                <el-tag type="danger" closable v-for="third in second.children" :key="third.id" class="right" @close="delRights(scope.row, third)">{{ third.authName }}</el-tag>
               </el-col>
             </el-row>
           </el-col>
@@ -71,12 +71,12 @@
   </el-table>
   <AddRoles ref="rolesEl" v-on:addRoles-success="loadRoles()" />
   <EditRoles ref="editRolesEl" v-on:editRoles-success="loadRoles()" />
-  <SetRoles ref="setRolesEl"/>
+  <SetRoles ref="setRolesEl" v-on:set-rights-success="loadRoles()" />
 </div>
 </template>
 
 <script>
-import { rolesList, delRoles } from '@/api/role'
+import { rolesList, delRoles, delRolesRights } from '@/api/role'
 import AddRoles from './addroles'
 import EditRoles from './editRoles'
 import SetRoles from './setRoles'
@@ -132,6 +132,12 @@ export default {
     },
     handleSetRoles (item) {
       this.$refs.setRolesEl.setRolesShow(item)
+    },
+    async delRights (role, right) {
+      const { data, meta } = await delRolesRights(role.id, right.id)
+      if (meta.status === 200) {
+        role.children = data
+      }
     }
   }
 }

@@ -4,6 +4,7 @@
       <el-tree
         :data="rolesData"
         show-checkbox
+        ref="tree"
         default-expand-all
         :default-checked-keys="defaultChecked"
         node-key="id"
@@ -21,7 +22,7 @@
           </div>
           <el-button slot="reference">取消</el-button>
         </el-popover>
-        <el-button type="primary" class="sure">确定</el-button>
+        <el-button type="primary" class="sure" @click.prevent="handleSubmit">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -29,6 +30,7 @@
 
 <script>
 import { getRithts } from '@/api/rights'
+import { updataRoles } from '@/api/role'
 export default {
   name: 'setRoles',
   data () {
@@ -40,7 +42,8 @@ export default {
         label: 'authName'
       },
       rolesData: [],
-      defaultChecked: []
+      defaultChecked: [],
+      item: {}
     }
   },
   methods: {
@@ -54,6 +57,7 @@ export default {
       this.setRolesFormVisible = false
     },
     async setRolesShow (item) { // 显示角色信息框
+      this.item = item
       this.setRolesFormVisible = true
       this.loadRoles()
       this.getRolesRights(item.children)
@@ -71,6 +75,19 @@ export default {
       const { data, meta } = await getRithts('tree')
       if (meta.status === 200) {
         this.rolesData = data
+      }
+    },
+    async handleSubmit () {
+      const tree = this.$refs.tree
+      const rids = [...tree.getCheckedKeys(), ...tree.getHalfCheckedKeys()].join(',')
+      const { meta } = await updataRoles(this.item.id, rids)
+      if (meta.status === 200) {
+        this.$emit('set-rights-success')
+        this.setRolesFormVisible = false
+        this.$message({
+          type: 'success',
+          message: '授权成功'
+        })
       }
     }
   }

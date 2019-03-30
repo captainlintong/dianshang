@@ -46,7 +46,7 @@
             <span>商品管理</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="3-1">
+            <el-menu-item index="/shop">
               <i class="iconfont icon-shangpinliebiao"></i>
               商品列表
             </el-menu-item>

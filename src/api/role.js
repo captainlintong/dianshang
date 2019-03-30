@@ -45,3 +45,17 @@ export const delRoles = (id) => request({
   url: `roles/${id}`,
   method: 'delete'
 }).then(res => res.data)
+
+// 角色授权
+export const updataRoles = (roleid, rids) => request({
+  method: 'post',
+  url: `roles/${roleid}/rights`,
+  data: {
+    rids
+  }
+}).then(res => res.data)
+// 删除角色
+export const delRolesRights = (roleid, rightid) => request({
+  method: 'delete',
+  url: `roles/${roleid}/rights/${rightid}`
+}).then(res => res.data)
