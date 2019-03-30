@@ -56,6 +56,8 @@ export default {
           type: 'success'
         })
         setToken(data.token)
+        localStorage.setItem('username', this.loginForm.username)
+        // this.$router.replace(`/?username=${this.loginForm.username}`)
         this.$router.replace('/')
       } else {
         this.$message.error(`登录失败${meta.msg}`)

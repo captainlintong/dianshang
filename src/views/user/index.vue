@@ -69,10 +69,10 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- 分页组件 -->
+      <!-- 分页组件   @size-change="abcd"-->
        <el-pagination
         background
-        @size-change="abcd"
+
         @current-change="loadUsers"
         :page-sizes="[5, 10, 15, 20]"
         layout="total, sizes, prev, pager, next, jumper"

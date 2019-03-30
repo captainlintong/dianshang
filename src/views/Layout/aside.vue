@@ -10,19 +10,19 @@
         text-color="#fff"
         active-text-color="#ffd04b"
         :router="true">
-        <el-submenu index="1">
+        <el-submenu :index="first.path" v-for="first in menus" :key="first.id">
           <template slot="title">
             <i class="iconfont icon-yonghuguanli"></i>
-            <span>用户管理</span>
+            <span>{{ first.authName }}</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="/users">
+            <el-menu-item :index="`/${second.path}`" v-for="second in first.children" :key="second.id">
               <i class="iconfont icon-ico-"></i>
-              用户列表
+              {{ second.authName}}
               </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-submenu index="2">
+        <!-- <el-submenu index="2">
           <template slot="title">
             <i class="iconfont icon-quanxianguanli"></i>
             <span>权限管理</span>
@@ -87,17 +87,23 @@
               数据报表
             </el-menu-item>
           </el-menu-item-group>
-        </el-submenu>
+        </el-submenu> -->
       </el-menu>
     </el-aside>
   </div>
 </template>
 
 <script>
+import { getRithtMenus } from '@/api/rights'
 export default {
   name: 'Aside',
   data () {
-    return {}
+    return {
+      menus: []
+    }
+  },
+  created () {
+    this.loadRightMenus()
   },
   methods: {
     handleOpen (key, keyPath) {
@@ -105,6 +111,12 @@ export default {
     },
     handleClose (key, keyPath) {
       console.log(key, keyPath)
+    },
+    async loadRightMenus () {
+      const { data, meta } = await getRithtMenus()
+      if (meta.status === 200) {
+        this.menus = data
+      }
     }
   }
 }

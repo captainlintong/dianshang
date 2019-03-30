@@ -6,7 +6,7 @@
         </el-col>
         <el-col :span="17" class="pin">品 优 购 后 台 管 理 系 统</el-col>
         <el-col :span="4">
-          <el-button  @click="goOut" size="mini" type="info">退出</el-button>
+          <span>当前用户：{{ username }}</span><el-button  @click="goOut" size="mini" type="info">退出</el-button>
         </el-col>
       </el-row>
   </div>
@@ -16,10 +16,14 @@
 
 import { removeToken } from '@/until/auth'
 
+
 export default {
   name: 'AppHeader',
   data () {
-    return {}
+    return {
+      // username: this.$route.query.username
+      username: localStorage.getItem('username')
+    }
   },
   methods: {
     goOut () {
@@ -29,6 +33,7 @@ export default {
         type: 'warning'
       }).then(() => {
         removeToken()
+        localStorage.removeItem('username')
         this.$router.replace('/login')
         this.$message({
           type: 'success',
@@ -80,5 +85,8 @@ export default {
   overflow: hidden;
   margin-left: 11px;
   padding: 24px 0;
+}
+.el-button {
+  margin-left: 15px;
 }
 </style>
