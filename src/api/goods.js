@@ -14,7 +14,7 @@ export const delShop = id => request({ // 删除商品
   url: `goods/${id}`
 }).then(res => res.data)
 // 添加商品
-export const addGoods = ({ goods_name, goods_price, goods_weight, goods_number, goods_cat, attrs = [] }) => request({
+export const addGoods = ({ goods_name, goods_price, goods_weight, goods_number, goods_cat, attrs = [], pics = [] }) => request({
   method: 'post',
   url: '/goods',
   data: {
@@ -23,6 +23,7 @@ export const addGoods = ({ goods_name, goods_price, goods_weight, goods_number, 
     goods_weight,
     goods_number,
     goods_cat,
-    attrs
+    attrs,
+    pics
   }
-})
+}).then(res => res.data)

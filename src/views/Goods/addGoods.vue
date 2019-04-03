@@ -66,7 +66,23 @@
         </el-form>
       </el-tab-pane>
       <!-- 商品属性 -->
-      <el-tab-pane label="商品图片"></el-tab-pane>
+      <!-- action是上传打接口地址
+            on-preview预览成功的处理函数
+            on-remove删除图片树立函数
+            :on-preview="handlePreview"
+          :on-remove="handleRemove"
+       -->
+      <el-tab-pane label="商品图片">
+        <el-upload
+          action="http://localhost:8888/api/private/v1/upload"
+          :headers="uploadHeaders"
+          :file-list="fileList"
+          :on-success="handleUploadSuccess"
+          list-type="picture">
+          <el-button size="small" type="primary">点击上传</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
+      </el-tab-pane>
       <el-tab-pane label="商品内容"></el-tab-pane>
     </el-tabs>
     <!-- /侧边导航 -->
@@ -81,6 +97,7 @@
 import { getGoodsCategoryList } from '@/api/goods-categories'
 import { addGoods } from '@/api/goods'
 import { getGoodsCategoryAttrs } from '@/api/goods-categories-attr'
+import { getToken } from '@/until/auth'
 export default {
   name: 'addGoods',
   data () {
@@ -95,7 +112,11 @@ export default {
       },
       goodsCategories: [], // 商品分类数据
       goodsCategoryAttrs: [], // 商品参数
-      goodsCategoryParams: [] // 商品属性
+      goodsCategoryParams: [], // 商品属性
+      uploadHeaders: { // 上传组件自定义请求头
+        Authorization: getToken()
+      },
+      fileList: []
     }
   },
   created () {
@@ -145,6 +166,13 @@ export default {
         this.goodsCategoryParams = data // 商品属性
       }
     },
+    handleUploadSuccess (response, file, fileList) { // 图片上传成功处理函数
+      this.fileList.push({
+        name: file.name,
+        url: `http://localhost:8888/${response.data.tmp_path}`
+      })
+
+    },
     async handelSubmit () { // 添加商品
       const { goods_name, goods_price, goods_weight, goods_number, goods_cat } = this.formData
       // 处理商品属性
@@ -163,10 +191,24 @@ export default {
           attr_value: attr.attr_vals
         }
       })
+      // 处理商品图片
+      const pics = this.fileList.map(item => {
+        const a = document.createElement('a')
+        a.href = item.url
+        return {
+          pic: a.pathname
+        }
+      })
       // 将商品属性和商品参数合并为一个数组提交给接口
       const attrs = [...categoryAttrs, ...categoryParams]
-      const { data } = await addGoods({ goods_name, goods_price, goods_weight, goods_number, goods_cat: goods_cat.join(','), attrs })
-      console.log(data)
+      const { data, meta } = await addGoods({ goods_name, goods_price, goods_weight, goods_number, goods_cat: goods_cat.join(','), attrs, pics })
+      if (meta.status === 201) {
+        this.$message({
+          type: 'success',
+          message: '添加商品成功'
+        })
+        this.$router.replace('/goods')
+      }
     }
   }
 }
