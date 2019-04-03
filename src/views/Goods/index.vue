@@ -7,7 +7,7 @@
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button plain @click="addUser">添加商品</el-button>
+          <el-button plain @click.prevent="$router.push('/toadd')">添加商品</el-button>
         </el-col>
       </el-row>
       <el-table
@@ -146,13 +146,6 @@ export default {
       this.$refs.addFormEl.resetFields()
       this.addFormVisible = false
     },
-    addUser () { // 显示添加用户框
-      this.$notify.info({
-        title: '消息',
-        message: '你将添加商品'
-      })
-      this.addFormVisible = true
-    },
     handelDelShop (item) { // 删除单个商品
       this.$confirm('是否确定删除商品?', '提示', {
         confirmButtonText: '确定',
@@ -178,7 +171,6 @@ export default {
     search () { // 搜索用户
       this.goodsListInfo.query = this.searchText
       this.loadGoodsList()
-
     }
   }
 }

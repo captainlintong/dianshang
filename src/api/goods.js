@@ -1,5 +1,5 @@
 import request from '@/until/request'
-export const getGoodsList = ({ pagenum = 1, pagesize = 5, query = '' }) => request({
+export const getGoodsList = ({ pagenum = 1, pagesize = 5, query = '' }) => request({ // 加载商品列表数据
   method: 'get',
   url: '/goods',
   params: {
@@ -8,8 +8,21 @@ export const getGoodsList = ({ pagenum = 1, pagesize = 5, query = '' }) => reque
     query
   }
 }).then(res => res.data)
-// 删除商品
-export const delShop = id => request({
+
+export const delShop = id => request({ // 删除商品
   method: 'delete',
   url: `goods/${id}`
 }).then(res => res.data)
+// 添加商品
+export const addGoods = ({ goods_name, goods_price, goods_weight, goods_number, goods_cat, attrs = [] }) => request({
+  method: 'post',
+  url: '/goods',
+  data: {
+    goods_name,
+    goods_price,
+    goods_weight,
+    goods_number,
+    goods_cat,
+    attrs
+  }
+})
