@@ -84,7 +84,17 @@
         </el-upload>
       </el-tab-pane>
       <el-tab-pane label="商品内容">
-        <div ref="editor" style="text-align:left"></div>
+
+        <!-- <div ref="editor" style="text-align:left"></div> -->
+
+        <!-- <RichTextRditor @editor-change="handleEditorChange" /> -->
+
+        <!-- <RichTextRditor
+        :content="formData.goods_introduce"
+        @updata="formData.goods_introduce = $event" /> -->
+
+        <RichTextRditor :content.sync="formData.goods_introduce" />
+
       </el-tab-pane>
     </el-tabs>
     <!-- /侧边导航 -->
@@ -100,10 +110,14 @@ import { getGoodsCategoryList } from '@/api/goods-categories'
 import { addGoods } from '@/api/goods'
 import { getGoodsCategoryAttrs } from '@/api/goods-categories-attr'
 import { getToken } from '@/until/auth'
-import E from 'wangeditor'
-import { upload } from '@/api'
+// import E from 'wangeditor'
+// import { upload } from '@/api'
+import RichTextRditor from '@/components/RichTextEditor'
 export default {
   name: 'addGoods',
+  components: {
+    RichTextRditor
+  },
   data () {
     return {
       formData: {
@@ -127,32 +141,32 @@ export default {
   created () {
     this.loadGoodsCategories()
   },
-  mounted () {
-    var editor = new E(this.$refs.editor)
-    // 配置服务器端地址
-    editor.customConfig.uploadImgServer = 'http://localhost:8888/api/private/v1/upload'
-    editor.customConfig.customUploadImg = async (files, insert) => {
-      // files 是 input 中选中的文件列表
-      // insert 是获取图片 url 后，插入到编辑器的方法
-      const { data, meta } = await upload(files)
-      if (meta.status === 200) {
-        insert(`http://localhost:8888/${data.tmp_path}`)
-      }
-      // 上传代码返回结果之后，将图片插入到编辑器中
-      // insert(imgUrl)
-    }
+  // mounted () {
+  //   var editor = new E(this.$refs.editor)
+  //   // 配置服务器端地址
+  //   editor.customConfig.uploadImgServer = 'http://localhost:8888/api/private/v1/upload'
+  //   editor.customConfig.customUploadImg = async (files, insert) => {
+  //     // files 是 input 中选中的文件列表
+  //     // insert 是获取图片 url 后，插入到编辑器的方法
+  //     const { data, meta } = await upload(files)
+  //     if (meta.status === 200) {
+  //       insert(`http://localhost:8888/${data.tmp_path}`)
+  //     }
+  //     // 上传代码返回结果之后，将图片插入到编辑器中
+  //     // insert(imgUrl)
+  //   }
 
-    // // 自定义 fileName
-    // editor.customConfig.uploadFileName = 'file'
-    // // 配置请求上传自定义请求头 添加token
-    // editor.customConfig.uploadImgHeaders = {
-    //   Authorization: getToken()
-    // }
-    editor.customConfig.onchange = html => {
-      this.formData.goods_introduce = html
-    }
-    editor.create()
-  },
+  //   // // 自定义 fileName
+  //   // editor.customConfig.uploadFileName = 'file'
+  //   // // 配置请求上传自定义请求头 添加token
+  //   // editor.customConfig.uploadImgHeaders = {
+  //   //   Authorization: getToken()
+  //   // }
+  //   editor.customConfig.onchange = html => {
+  //     this.formData.goods_introduce = html
+  //   }
+  //   editor.create()
+  // },
   methods: {
     async loadGoodsCategories () { // 级联样式表显示数据
       const { data, meta } = await getGoodsCategoryList()
@@ -202,6 +216,9 @@ export default {
         name: file.name,
         url: `http://localhost:8888/${response.data.tmp_path}`
       })
+    },
+    handleEditorChange (editorContent) {
+      this.formData.goods_introduce = editorContent
     },
     async handelSubmit () { // 添加商品
       const { goods_name, goods_price, goods_weight, goods_number, goods_cat, goods_introduce } = this.formData
