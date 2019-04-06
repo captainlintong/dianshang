@@ -83,7 +83,9 @@
           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
         </el-upload>
       </el-tab-pane>
-      <el-tab-pane label="商品内容"></el-tab-pane>
+      <el-tab-pane label="商品内容">
+        <div ref="editor" style="text-align:left"></div>
+      </el-tab-pane>
     </el-tabs>
     <!-- /侧边导航 -->
 
@@ -98,6 +100,8 @@ import { getGoodsCategoryList } from '@/api/goods-categories'
 import { addGoods } from '@/api/goods'
 import { getGoodsCategoryAttrs } from '@/api/goods-categories-attr'
 import { getToken } from '@/until/auth'
+import E from 'wangeditor'
+import { upload } from '@/api'
 export default {
   name: 'addGoods',
   data () {
@@ -108,7 +112,8 @@ export default {
         goods_weight: '',
         goods_number: '',
         goods_cat: [],
-        is_promote: ''
+        is_promote: '',
+        goods_introduce: '' // 商品介绍
       },
       goodsCategories: [], // 商品分类数据
       goodsCategoryAttrs: [], // 商品参数
@@ -121,6 +126,32 @@ export default {
   },
   created () {
     this.loadGoodsCategories()
+  },
+  mounted () {
+    var editor = new E(this.$refs.editor)
+    // 配置服务器端地址
+    editor.customConfig.uploadImgServer = 'http://localhost:8888/api/private/v1/upload'
+    editor.customConfig.customUploadImg = async (files, insert) => {
+      // files 是 input 中选中的文件列表
+      // insert 是获取图片 url 后，插入到编辑器的方法
+      const { data, meta } = await upload(files)
+      if (meta.status === 200) {
+        insert(`http://localhost:8888/${data.tmp_path}`)
+      }
+      // 上传代码返回结果之后，将图片插入到编辑器中
+      // insert(imgUrl)
+    }
+
+    // // 自定义 fileName
+    // editor.customConfig.uploadFileName = 'file'
+    // // 配置请求上传自定义请求头 添加token
+    // editor.customConfig.uploadImgHeaders = {
+    //   Authorization: getToken()
+    // }
+    editor.customConfig.onchange = html => {
+      this.formData.goods_introduce = html
+    }
+    editor.create()
   },
   methods: {
     async loadGoodsCategories () { // 级联样式表显示数据
@@ -171,10 +202,9 @@ export default {
         name: file.name,
         url: `http://localhost:8888/${response.data.tmp_path}`
       })
-
     },
     async handelSubmit () { // 添加商品
-      const { goods_name, goods_price, goods_weight, goods_number, goods_cat } = this.formData
+      const { goods_name, goods_price, goods_weight, goods_number, goods_cat, goods_introduce } = this.formData
       // 处理商品属性
       const categoryAttrs = this.goodsCategoryAttrs
         .map(attr => {
@@ -201,7 +231,7 @@ export default {
       })
       // 将商品属性和商品参数合并为一个数组提交给接口
       const attrs = [...categoryAttrs, ...categoryParams]
-      const { data, meta } = await addGoods({ goods_name, goods_price, goods_weight, goods_number, goods_cat: goods_cat.join(','), attrs, pics })
+      const { meta } = await addGoods({ goods_name, goods_price, goods_weight, goods_number, goods_cat: goods_cat.join(','), attrs, pics, goods_introduce })
       if (meta.status === 201) {
         this.$message({
           type: 'success',

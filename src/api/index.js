@@ -7,3 +7,13 @@ export const loginAdress = data => request({
     password: data.password
   }
 }).then(res => res.data)
+
+export const upload = files => {
+  const formData = new FormData()
+  formData.append('file', files[0])
+  return request({
+    method: 'POST',
+    url: '/upload',
+    data: formData
+  }).then(res => res.data)
+}
